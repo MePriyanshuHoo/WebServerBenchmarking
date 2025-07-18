@@ -1,0 +1,80 @@
+{
+  "name": "your-framework-name",
+  "version": "1.0.0",
+  "description": "TEMPLATE: Your framework description for benchmarking",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "start:ts": "tsx server.ts",
+    "dev:ts": "tsx --watch server.ts",
+    "build": "tsc",
+    "test": "npm test",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "benchmark",
+    "performance",
+    "web-framework",
+    "nodejs",
+    "javascript",
+    "typescript"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "dependencies": {
+    "_template_comment": "Add your framework dependencies here",
+    "_examples": {
+      "_express": "express: ^4.18.2",
+      "_fastify": "fastify: ^4.24.3",
+      "_koa": "koa: ^2.14.2, @koa/router: ^12.0.1",
+      "_hapi": "@hapi/hapi: ^21.3.2",
+      "_restify": "restify: ^11.1.0",
+      "_polka": "polka: ^0.5.2"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "tsx": "^4.0.0",
+    "nodemon": "^3.0.0",
+    "_typescript_types": {
+      "_express": "@types/express: ^4.17.21",
+      "_koa": "@types/koa: ^2.13.12, @types/koa__router: ^12.0.4"
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MePriyanshuHoo/WebServerBenchmarking.git",
+    "directory": "servers/your-framework-name"
+  },
+  "bugs": {
+    "url": "https://github.com/MePriyanshuHoo/WebServerBenchmarking/issues"
+  },
+  "homepage": "https://github.com/MePriyanshuHoo/WebServerBenchmarking#readme",
+  "_template_instructions": {
+    "1": "Replace 'your-framework-name' with your actual framework name (e.g., 'express-node', 'fastify-server')",
+    "2": "Update the description with your framework details",
+    "3": "Choose JavaScript or TypeScript and update 'main' field accordingly",
+    "4": "Add your framework dependencies in the dependencies section",
+    "5": "Add corresponding @types packages if using TypeScript",
+    "6": "Remove the '_template_comment', '_examples', and '_typescript_types' entries",
+    "7": "Update author information",
+    "8": "Test with 'npm install' and 'npm start'",
+    "9": "Ensure the server starts on port 8080",
+    "10": "Verify all required endpoints work correctly",
+    "11": "For TypeScript: create server.ts and use 'npm run start:ts'",
+    "12": "For JavaScript: create server.js and use 'npm start'"
+  },
+  "_runtime_notes": {
+    "javascript": "Create server.js and use vanilla Node.js or your chosen framework",
+    "typescript": "Create server.ts, ensure tsx is installed, use npm run start:ts",
+    "esm": "type: 'module' enables ES modules, use import/export syntax",
+    "commonjs": "Remove 'type: module' to use CommonJS require/module.exports"
+  }
+}

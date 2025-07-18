@@ -1,0 +1,57 @@
+{
+  "name": "your-framework-name",
+  "version": "1.0.0",
+  "description": "TEMPLATE: Your framework description for benchmarking",
+  "main": "server.ts",
+  "scripts": {
+    "start": "bun run server.ts",
+    "dev": "bun --watch server.ts",
+    "test": "bun test",
+    "build": "bun build server.ts --outdir ./dist",
+    "type-check": "bun --bun tsc --noEmit"
+  },
+  "keywords": [
+    "benchmark",
+    "performance",
+    "web-framework",
+    "bun",
+    "typescript"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "dependencies": {
+    "_template_comment": "Add your framework dependencies here",
+    "_examples": {
+      "_hono": "hono: ^3.11.7",
+      "_elysia": "elysia: ^0.7.30",
+      "_express": "@types/express: ^4.17.21, express: ^4.18.2",
+      "_fastify": "fastify: ^4.24.3"
+    }
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MePriyanshuHoo/WebServerBenchmarking.git",
+    "directory": "servers/your-framework-name"
+  },
+  "bugs": {
+    "url": "https://github.com/MePriyanshuHoo/WebServerBenchmarking/issues"
+  },
+  "homepage": "https://github.com/MePriyanshuHoo/WebServerBenchmarking#readme",
+  "_template_instructions": {
+    "1": "Replace 'your-framework-name' with your actual framework name (e.g., 'express-bun', 'elysia-server')",
+    "2": "Update the description with your framework details",
+    "3": "Add your framework dependencies in the dependencies section",
+    "4": "Remove the '_template_comment' and '_examples' entries",
+    "5": "Update author information",
+    "6": "Test with 'bun install' and 'bun run start'",
+    "7": "Ensure the server starts on port 8080",
+    "8": "Verify all required endpoints work correctly"
+  }
+}

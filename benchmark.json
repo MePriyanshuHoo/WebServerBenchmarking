@@ -1,0 +1,345 @@
+{
+  "project": {
+    "name": "JS vs Go Web Framework Benchmark",
+    "description": "A comprehensive performance comparison between JavaScript (Bun runtime) and Go web frameworks",
+    "version": "1.0.0",
+    "repository": "https://github.com/MePriyanshuHoo/WebServerBenchmarking.git",
+    "license": "MIT"
+  },
+  "benchmark": {
+    "default_settings": {
+      "duration": 30,
+      "connections": 100,
+      "threads": 4,
+      "warmup_time": 5,
+      "port": 8080
+    },
+    "ci_settings": {
+      "duration": 15,
+      "connections": 50,
+      "threads": 2,
+      "warmup_time": 2,
+      "port": 8080
+    },
+    "load_test_profiles": {
+      "light": {
+        "duration": 30,
+        "connections": 25,
+        "threads": 2,
+        "description": "Light load testing"
+      },
+      "medium": {
+        "duration": 30,
+        "connections": 100,
+        "threads": 4,
+        "description": "Medium load testing"
+      },
+      "heavy": {
+        "duration": 30,
+        "connections": 300,
+        "threads": 8,
+        "description": "Heavy load testing"
+      },
+      "endurance": {
+        "duration": 120,
+        "connections": 50,
+        "threads": 2,
+        "description": "Endurance testing"
+      }
+    }
+  },
+  "frameworks": {
+    "go-vanilla": {
+      "name": "Go Vanilla (net/http)",
+      "description": "Standard Go HTTP server using the built-in net/http package",
+      "language": "Go",
+      "runtime": "go",
+      "directory": "./servers/go-vanilla",
+      "start_command": "go run .",
+      "build_command": "go build -o server .",
+      "setup_commands": ["go mod tidy"],
+      "dependencies": ["go"],
+      "category": "go"
+    },
+    "go-fiber": {
+      "name": "Go Fiber",
+      "description": "Fast Express-inspired web framework built on top of Fasthttp",
+      "language": "Go",
+      "runtime": "go",
+      "directory": "./servers/go-fiber",
+      "start_command": "go run .",
+      "build_command": "go build -o server .",
+      "setup_commands": ["go mod tidy"],
+      "dependencies": ["go"],
+      "category": "go"
+    },
+    "bun-vanilla": {
+      "name": "Bun Vanilla",
+      "description": "Pure Bun HTTP server using Bun's native HTTP APIs",
+      "language": "TypeScript",
+      "runtime": "bun",
+      "directory": "./servers/bun-vanilla",
+      "start_command": "bun run server.ts",
+      "build_command": null,
+      "setup_commands": [],
+      "dependencies": ["bun"],
+      "category": "javascript"
+    },
+    "hono-bun": {
+      "name": "Hono.js on Bun",
+      "description": "Ultrafast web framework for Cloudflare Workers, Deno, Bun, and Node.js",
+      "language": "TypeScript",
+      "runtime": "bun",
+      "directory": "./servers/hono-bun",
+      "start_command": "bun run server.ts",
+      "build_command": null,
+      "setup_commands": ["bun install"],
+      "dependencies": ["bun"],
+      "category": "javascript"
+    }
+  },
+  "test_endpoints": {
+    "root": {
+      "path": "/",
+      "method": "GET",
+      "description": "Simple Hello World response",
+      "expected_status": 200
+    },
+    "health": {
+      "path": "/health",
+      "method": "GET",
+      "description": "Health check endpoint",
+      "expected_status": 200
+    },
+    "user_get": {
+      "path": "/user/123",
+      "method": "GET",
+      "description": "Parameterized route returning user data",
+      "expected_status": 200
+    },
+    "user_post": {
+      "path": "/users",
+      "method": "POST",
+      "description": "Create user endpoint",
+      "body": "{\"name\":\"Test User\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "expected_status": 201
+    }
+  },
+  "tools": {
+    "required": [
+      {
+        "name": "wrk",
+        "description": "HTTP benchmarking tool",
+        "install": {
+          "macos": "brew install wrk",
+          "ubuntu": "sudo apt-get install wrk",
+          "arch": "sudo pacman -S wrk"
+        }
+      },
+      {
+        "name": "go",
+        "description": "Go programming language",
+        "install": {
+          "macos": "brew install go",
+          "ubuntu": "sudo apt-get install golang-go",
+          "arch": "sudo pacman -S go"
+        }
+      },
+      {
+        "name": "bun",
+        "description": "JavaScript runtime and package manager",
+        "install": {
+          "all": "curl -fsSL https://bun.sh/install | bash"
+        }
+      },
+      {
+        "name": "jq",
+        "description": "JSON processor",
+        "install": {
+          "macos": "brew install jq",
+          "ubuntu": "sudo apt-get install jq",
+          "arch": "sudo pacman -S jq"
+        }
+      },
+      {
+        "name": "curl",
+        "description": "HTTP client",
+        "install": {
+          "macos": "brew install curl",
+          "ubuntu": "sudo apt-get install curl",
+          "arch": "sudo pacman -S curl"
+        }
+      }
+    ],
+    "optional": [
+      {
+        "name": "air",
+        "description": "Go live reload tool",
+        "install": {
+          "all": "go install github.com/cosmtrek/air@latest"
+        }
+      }
+    ]
+  },
+  "ci_cd": {
+    "triggers": {
+      "push": ["main"],
+      "pull_request": ["main"],
+      "schedule": "0 2 1 * *",
+      "workflow_dispatch": true
+    },
+    "environments": {
+      "ubuntu-latest": {
+        "os": "ubuntu-latest",
+        "setup_commands": [
+          "sudo apt-get update",
+          "sudo apt-get install -y wrk golang-go jq curl lsof"
+        ]
+      }
+    },
+    "artifacts": {
+      "results": {
+        "path": "results/",
+        "retention_days": 30
+      },
+      "logs": {
+        "path": "*.log",
+        "retention_days": 7
+      }
+    }
+  },
+  "output": {
+    "results_directory": "./results",
+    "readme_file": "./README.md",
+    "formats": ["json", "markdown"],
+    "charts": {
+      "ascii_chart": true,
+      "performance_table": true,
+      "endpoint_comparison": true
+    }
+  },
+  "extensibility": {
+    "auto_discovery": {
+      "enabled": true,
+      "scan_directories": ["./servers"],
+      "config_based": true,
+      "fallback_detection": true
+    },
+    "templates": {
+      "go-template": {
+        "name": "Go Framework Template",
+        "description": "Template for any Go web framework (Gin, Echo, Chi, etc.)",
+        "runtime": "go",
+        "files": ["main.go", "go.mod"],
+        "setup_commands": ["go mod tidy"],
+        "start_command": "go run ."
+      },
+      "bun-template": {
+        "name": "Bun/TypeScript Template",
+        "description": "Template for TypeScript frameworks on Bun runtime",
+        "runtime": "bun",
+        "files": ["server.ts", "package.json"],
+        "setup_commands": ["bun install"],
+        "start_command": "bun run server.ts"
+      },
+      "node-template": {
+        "name": "Node.js Template",
+        "description": "Template for JavaScript/TypeScript frameworks on Node.js",
+        "runtime": "node",
+        "files": ["package.json"],
+        "setup_commands": ["npm install"],
+        "start_command": "npm start"
+      }
+    },
+    "validation": {
+      "required_endpoints": [
+        {
+          "path": "/",
+          "method": "GET",
+          "expected_status": 200,
+          "required_fields": ["message", "timestamp"]
+        },
+        {
+          "path": "/health",
+          "method": "GET",
+          "expected_status": 200,
+          "required_fields": ["message", "timestamp"]
+        },
+        {
+          "path": "/user/:id",
+          "method": "GET",
+          "expected_status": 200,
+          "required_fields": ["message", "timestamp", "data"]
+        },
+        {
+          "path": "/users",
+          "method": "POST",
+          "expected_status": 201,
+          "required_fields": ["message", "timestamp", "data"]
+        }
+      ],
+      "response_format": {
+        "message": "string",
+        "timestamp": "ISO 8601 date",
+        "data": "object (optional)"
+      },
+      "server_requirements": {
+        "port": 8080,
+        "startup_timeout": 15,
+        "request_timeout": 30
+      }
+    },
+    "tools": {
+      "add_server_script": "./tools/add-server.sh",
+      "validate_server_script": "./tools/validate-server.sh",
+      "auto_discovery": true,
+      "makefile_integration": true
+    }
+  },
+  "contribution": {
+    "guide": "./ADD-NEW-SERVER.md",
+    "process": [
+      "Use 'make add-server' for interactive setup",
+      "Implement required endpoints following templates",
+      "Validate with 'make validate-server SERVER=name'",
+      "Test with 'make bench-name'",
+      "Submit pull request"
+    ],
+    "supported_runtimes": [
+      "go",
+      "bun",
+      "node",
+      "deno",
+      "python",
+      "rust",
+      "java",
+      "other"
+    ],
+    "requirements": {
+      "endpoints": 4,
+      "response_format": "JSON with message, timestamp, optional data",
+      "port": 8080,
+      "documentation": "README.md or DEVELOPMENT.md required"
+    }
+  },
+  "meta": {
+    "created": "2024-01-01",
+    "authors": ["Benchmark Suite"],
+    "keywords": [
+      "benchmark",
+      "performance",
+      "go",
+      "javascript",
+      "bun",
+      "web-frameworks",
+      "extensible",
+      "open-source",
+      "contributions"
+    ],
+    "documentation": "https://github.com/MePriyanshuHoo/WebServerBenchmarking/blob/main/README.md",
+    "extensibility_guide": "https://github.com/MePriyanshuHoo/WebServerBenchmarking/blob/main/ADD-NEW-SERVER.md"
+  }
+}

@@ -1,0 +1,198 @@
+version: '3.8'
+
+services:
+  # Main benchmark service
+  benchmark:
+    build: .
+    container_name: jsvsgo-benchmark
+    volumes:
+      - ./results:/app/results
+      - ./README.md:/app/README.md
+    environment:
+      - DURATION=${DURATION:-30}
+      - CONNECTIONS=${CONNECTIONS:-100}
+      - THREADS=${THREADS:-4}
+      - CI=${CI:-false}
+    networks:
+      - benchmark-net
+    profiles:
+      - full
+      - default
+
+  # CI-friendly benchmark (faster, lighter)
+  benchmark-ci:
+    build: .
+    container_name: jsvsgo-benchmark-ci
+    volumes:
+      - ./results:/app/results
+      - ./README.md:/app/README.md
+    environment:
+      - DURATION=15
+      - CONNECTIONS=50
+      - THREADS=2
+      - CI=true
+    command: ["./scripts/benchmark.sh", "--duration", "15", "--connections", "50", "--threads", "2"]
+    networks:
+      - benchmark-net
+    profiles:
+      - ci
+
+  # Load testing with different configurations
+  benchmark-light:
+    build: .
+    container_name: jsvsgo-benchmark-light
+    volumes:
+      - ./results:/app/results
+    environment:
+      - DURATION=30
+      - CONNECTIONS=25
+      - THREADS=2
+      - CI=true
+    command: ["./scripts/benchmark.sh", "--duration", "30", "--connections", "25", "--threads", "2"]
+    networks:
+      - benchmark-net
+    profiles:
+      - load-test
+
+  benchmark-heavy:
+    build: .
+    container_name: jsvsgo-benchmark-heavy
+    volumes:
+      - ./results:/app/results
+    environment:
+      - DURATION=60
+      - CONNECTIONS=300
+      - THREADS=8
+      - CI=true
+    command: ["./scripts/benchmark.sh", "--duration", "60", "--connections", "300", "--threads", "8"]
+    networks:
+      - benchmark-net
+    profiles:
+      - load-test
+
+  # Endurance testing
+  benchmark-endurance:
+    build: .
+    container_name: jsvsgo-benchmark-endurance
+    volumes:
+      - ./results:/app/results
+    environment:
+      - DURATION=300
+      - CONNECTIONS=100
+      - THREADS=4
+      - CI=true
+    command: ["./scripts/benchmark.sh", "--duration", "300", "--connections", "100", "--threads", "4"]
+    networks:
+      - benchmark-net
+    profiles:
+      - endurance
+
+  # Development container for interactive use
+  dev:
+    build: .
+    container_name: jsvsgo-benchmark-dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - go-cache:/tmp/go-cache
+    environment:
+      - CI=false
+    command: ["bash"]
+    stdin_open: true
+    tty: true
+    networks:
+      - benchmark-net
+    profiles:
+      - dev
+
+  # Individual server testing containers
+  go-vanilla:
+    build: .
+    container_name: go-vanilla-server
+    volumes:
+      - ./servers/go-vanilla:/app/servers/go-vanilla
+    working_dir: /app/servers/go-vanilla
+    command: ["go", "run", "."]
+    ports:
+      - "8080:8080"
+    networks:
+      - benchmark-net
+    profiles:
+      - servers
+
+  go-fiber:
+    build: .
+    container_name: go-fiber-server
+    volumes:
+      - ./servers/go-fiber:/app/servers/go-fiber
+    working_dir: /app/servers/go-fiber
+    command: ["go", "run", "."]
+    ports:
+      - "8081:8080"
+    networks:
+      - benchmark-net
+    profiles:
+      - servers
+
+  bun-vanilla:
+    build: .
+    container_name: bun-vanilla-server
+    volumes:
+      - ./servers/bun-vanilla:/app/servers/bun-vanilla
+    working_dir: /app/servers/bun-vanilla
+    command: ["bun", "run", "server.ts"]
+    ports:
+      - "8082:8080"
+    networks:
+      - benchmark-net
+    profiles:
+      - servers
+
+  hono-bun:
+    build: .
+    container_name: hono-bun-server
+    volumes:
+      - ./servers/hono-bun:/app/servers/hono-bun
+    working_dir: /app/servers/hono-bun
+    command: ["bun", "run", "server.ts"]
+    ports:
+      - "8083:8080"
+    networks:
+      - benchmark-net
+    profiles:
+      - servers
+
+networks:
+  benchmark-net:
+    driver: bridge
+
+volumes:
+  go-cache:
+    driver: local
+
+# Usage examples:
+#
+# Run default benchmark:
+# docker-compose up benchmark
+#
+# Run CI benchmark:
+# docker-compose --profile ci up benchmark-ci
+#
+# Run load tests:
+# docker-compose --profile load-test up benchmark-light benchmark-heavy
+#
+# Run endurance test:
+# docker-compose --profile endurance up benchmark-endurance
+#
+# Start development environment:
+# docker-compose --profile dev up -d dev
+# docker-compose exec dev bash
+#
+# Start individual servers for testing:
+# docker-compose --profile servers up go-vanilla go-fiber
+#
+# Run with custom environment:
+# DURATION=60 CONNECTIONS=200 THREADS=8 docker-compose up benchmark
+#
+# Clean up:
+# docker-compose down --volumes --remove-orphans

@@ -1,0 +1,25 @@
+{
+  "name": "bun-vanilla-server",
+  "version": "1.0.0",
+  "description": "Bun vanilla HTTP server for benchmarking",
+  "main": "server.ts",
+  "scripts": {
+    "start": "bun run server.ts",
+    "dev": "bun --watch server.ts"
+  },
+  "keywords": [
+    "bun",
+    "http",
+    "server",
+    "benchmark"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "dependencies": {},
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}
